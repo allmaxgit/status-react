@@ -47,9 +47,9 @@
                                   :address          id
                                   :photo-path       (identicon whisper-identity)
                                   :whisper-identity whisper-identity}]
-                     (dispatch [:add-new-contact contact]))
+                     (dispatch [:prepare-contact contact]))
                    (dispatch [:set :new-contact-address-error (label :t/unknown-address)]))))
-    (dispatch [:add-new-contact {:name             ""
+    (dispatch [:prepare-contact {:name             ""
                                  :photo-path       (identicon id)
                                  :whisper-identity id}])))
 

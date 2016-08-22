@@ -15,9 +15,15 @@
   [_ [_ contact]]
   (contacts/save-contacts [contact]))
 
+;; TODO(alwx): change usages
 (defn watch-contact
   [_ [_ contact]]
   (api/watch-user contact))
+
+(defn send-contact-request
+  [{:keys [current-account-id accounts]} [_ contact]]
+  (let [account (get accounts current-account-id)]
+    (api/send-contact-request contact account)))
 
 (register-handler :watch-contact (u/side-effect! watch-contact))
 
@@ -121,10 +127,10 @@
       (update :contacts assoc whisper-identity contact)
       (assoc :new-contact-identity "")))
 
-(register-handler :add-new-contact
+(register-handler :prepare-contact
    (-> add-new-contact
        ((after save-contact))
-       ((after watch-contact))))
+       ((after send-contact-request))))
 
 (defn set-contact-identity-from-qr
   [db [_ _ contact-identity]]
@@ -150,3 +156,7 @@
         (if (< prev-last-online last-online)
           (dispatch [:update-contact {:whisper-identity from
                                       :last-online      last-online}]))))))
+
+(register-handler :received-contact-request
+  (u/side-effect!
+    (fn [db])))
