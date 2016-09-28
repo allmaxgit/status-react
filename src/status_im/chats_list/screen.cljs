@@ -31,6 +31,8 @@
                                          :style  st/hamburger-icon}
                                :handler open-drawer}
             :title            (label :t/chats)
+            :style {:border-bottom-color "#D6D6D6"
+                    :border-bottom-width 1}
             :background-color (if chats-scrolled?
                                 toolbar-background1
                                 toolbar-background2)
