@@ -1,13 +1,13 @@
 (ns status-im.chat.handlers.requests
   (:require [re-frame.core :refer [after dispatch enrich]]
             [status-im.utils.handlers :refer [register-handler]]
-            [status-im.models.requests :as requests]
+            [status-im.data-store.requests :as requests]
             [status-im.utils.handlers :refer [register-handler] :as u]
             [status-im.persistence.realm.core :as realm]))
 
 (defn store-request!
   [{:keys [new-request] :as db}]
-  (requests/save-request new-request))
+  (requests/save new-request))
 
 (defn add-request
   [db [_ chat-id {:keys [message-id content]}]]

@@ -1,5 +1,5 @@
 (ns status-im.accounts.handlers
-  (:require [status-im.models.accounts :as accounts-model]
+  (:require [status-im.data-store.accounts :as accounts-store]
             [re-frame.core :refer [register-handler after dispatch dispatch-sync debug]]
             [taoensso.timbre :as log]
             [status-im.protocol.core :as protocol]
@@ -18,7 +18,7 @@
 
 
 (defn save-account [_ [_ account]]
-  (accounts-model/save-accounts [account] true))
+  (accounts-store/save account true))
 
 (register-handler
   :add-account
@@ -54,7 +54,7 @@
 
 (defn save-account-to-realm!
   [{:keys [current-account-id accounts]} _]
-  (accounts-model/save-accounts [(get accounts current-account-id)] true))
+  (accounts-store/save (get accounts current-account-id) true))
 
 (defn send-account-update
   [{:keys [current-account-id current-public-key web3 accounts]} _]
@@ -101,7 +101,7 @@
 (register-handler :set-current-account set-current-account)
 
 (defn load-accounts! [db _]
-  (let [accounts (->> (accounts-model/get-accounts)
+  (let [accounts (->> (accounts-store/get-all)
                       (map (fn [{:keys [address] :as account}]
                              [address account]))
                       (into {}))]
