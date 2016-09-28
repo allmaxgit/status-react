@@ -47,6 +47,15 @@
   [chat-id]
   (realm/exists? @realm/account-realm :chat {:chat-id chat-id}))
 
+(defn delete
+  [chat-id]
+  (when-let [chat (get-by-id chat-id)]
+    (realm/write @realm/account-realm
+                 (fn []
+                   (doto chat
+                     (aset "is-active" false)
+                     (aset "removed-at" timestamp))))))
+
 (defn get-contacts
   [chat-id]
   (-> (realm/get-one-by-field @realm/account-realm :chat :chat-id chat-id)

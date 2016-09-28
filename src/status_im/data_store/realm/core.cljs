@@ -38,9 +38,9 @@
 (def new-account-filename "new-account")
 (def new-accout-realm-file (str new-account-filename ".realm"))
 
-;(def base-realm (open-migrated-realm (.-defaultPath realm-class) base/schemas))
+(def base-realm (open-migrated-realm (.-defaultPath realm-class) base/schemas))
 
-;(def account-realm (atom (open-migrated-realm new-account-filename account/schemas)))
+(def account-realm (atom (open-migrated-realm new-account-filename account/schemas)))
 
 (defn close-account-realm []
   (close @account-realm)
@@ -112,6 +112,9 @@
   (.sorted results (to-string field-name) (if (= order :asc)
                                             false
                                             true)))
+
+(defn get-count [objs]
+  (.-length objs))
 
 (defn page [results from to]
   (js/Array.prototype.slice.call results from to))

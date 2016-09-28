@@ -5,7 +5,8 @@
             [clojure.walk :refer [stringify-keys keywordize-keys]]
             [status-im.commands.utils :refer [generate-hiccup]]
             [cljs.reader :refer [read-string]]
-            [status-im.constants :as c]))
+            [status-im.constants :as c])
+  (:refer-clojure :exclude [update]))
 
 (defn- map-to-str
   [m]
@@ -38,20 +39,20 @@
 (defn get-by-id
   [message-id]
   (some-> (data-store/get-by-id message-id)
-          (update :user-statuses user-statuses-to-map)))
+          (clojure.core/update :user-statuses user-statuses-to-map)))
 
 (defn get-by-chat-id
   ([chat-id]
    (get-by-chat-id chat-id 0))
   ([chat-id from]
    (->> (data-store/get-by-chat-id chat-id from c/default-number-of-messages)
-        (mapv #(update % :user-statuses user-statuses-to-map))
+        (mapv #(clojure.core/update % :user-statuses user-statuses-to-map))
         (into '())
         reverse
         (keep (fn [{:keys [content-type preview] :as message}]
                 (if (command-type? content-type)
                   (-> message
-                      (update :content str-to-map)
+                      (clojure.core/update :content str-to-map)
                       (assoc :rendered-preview
                              (when preview
                                (generate-hiccup (read-string preview)))))
@@ -60,6 +61,10 @@
 (defn get-last-message
   [chat-id]
   (data-store/get-last-message chat-id))
+
+(defn get-unviewed
+  []
+  (data-store/get-unviewed))
 
 (defn save
   ;; todo remove chat-id parameter

@@ -1,5 +1,6 @@
 (ns status-im.data-store.realm.contacts
-  (:require [status-im.data-store.realm.core :as realm]))
+  (:require [status-im.data-store.realm.core :as realm])
+  (:refer-clojure :exclude [exists?]))
 
 (defn get-all
   []
@@ -18,3 +19,7 @@
 (defn save
   [contact update?]
   (realm/save @realm/account-realm :contact contact update?))
+
+(defn exists?
+  [whisper-identity]
+  (realm/exists? @realm/account-realm :contact {:whisper-identity whisper-identity}))

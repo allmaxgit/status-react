@@ -5,9 +5,9 @@
   []
   (data-store/get-all-as-list))
 
-(defn get-by-chat-id
+(defn get-open-by-chat-id
   [chat-id]
-  (data-store/get-by-chat-id chat-id))
+  (data-store/get-open-by-chat-id chat-id))
 
 (defn save
   [request]
@@ -17,4 +17,6 @@
   [requests]
   (data-store/save-all requests))
 
-
+(defn mark-as-answered
+  [chat-id message-id]
+  (data-store/mark-as-answered chat-id message-id))

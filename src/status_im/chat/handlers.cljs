@@ -17,7 +17,6 @@
             [status-im.chat.sign-up :as sign-up-service]
             [status-im.navigation.handlers :as nav]
             [status-im.utils.handlers :refer [register-handler] :as u]
-            [status-im.persistence.realm.core :as r]
             [status-im.handlers.server :as server]
             [status-im.utils.phone-number :refer [format-phone-number
                                                   valid-mobile-number?]]
@@ -352,13 +351,7 @@
 
 (defn delete-chat!
   [_ [_ chat-id]]
-  (r/write :account
-           (fn [] :account
-             (when-let [chat (->> (r/get-by-field :account :chat :chat-id chat-id)
-                                  (r/single))]
-               (doto chat
-                 (aset "is-active" false)
-                 (aset "removed-at" (.getTime (js/Date.))))))))
+  (chats/delete chat-id))
 
 (defn remove-pending-messages!
   [_ [_ chat-id]]

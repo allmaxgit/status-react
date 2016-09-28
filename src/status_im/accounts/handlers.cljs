@@ -52,7 +52,7 @@
         password
         #(account-created % password)))))
 
-(defn save-account-to-realm!
+(defn save-account!
   [{:keys [current-account-id accounts]} _]
   (accounts-store/save (get accounts current-account-id) true))
 
@@ -77,7 +77,7 @@
               account (-> (get accounts current-account-id)
                           (merge data))]
           (assoc-in db [:accounts current-account-id] account)))
-      ((after save-account-to-realm!))
+      ((after save-account!))
       ((after send-account-update))))
 
 (register-handler

@@ -34,6 +34,12 @@
       (realm/single)
       (js->clj :keywordize-keys true)))
 
+(defn get-unviewed
+  []
+  (-> (realm/get-by-fields @realm/account-realm :message :and {:outgoing       false
+                                                               :message-status nil})
+      (realm/realm-collection->list)))
+
 (defn exists?
   [message-id]
   (realm/exists? @realm/account-realm :message {:message-id message-id}))

@@ -1,5 +1,6 @@
 (ns status-im.data-store.chats
-  (:require [status-im.data-store.realm.chats :as data-store])
+  (:require [status-im.data-store.realm.chats :as data-store]
+            [re-frame.core :refer [dispatch]])
   (:refer-clojure :exclude [exists?]))
 
 (defn- normalize-contacts
@@ -24,6 +25,10 @@
   (let [chat (assoc chat :last-message-id (or last-message-id ""))]
     (data-store/save chat (data-store/exists? chat-id))))
 
+(defn delete
+  [chat-id]
+  (data-store/delete chat-id))
+
 (defn get-contacts
   [chat-id]
   (data-store/get-contacts chat-id))
@@ -35,7 +40,8 @@
 (defn add-contacts
   [chat-id identities]
   (data-store/add-contacts chat-id identities)
-  ;; TODO: ?? temp. Update chat in db atom
+  ; TODO: move this somewhere else
+  ; TODO: temp. Update chat in db atom
   (dispatch [:initialize-chats]))
 
 (defn remove-contacts

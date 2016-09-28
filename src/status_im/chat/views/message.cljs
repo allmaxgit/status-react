@@ -12,7 +12,6 @@
             [status-im.components.animation :as anim]
             [status-im.chat.views.request-message :refer [message-content-command-request]]
             [status-im.chat.styles.message :as st]
-            [status-im.models.chats :refer [chat-by-id]]
             [status-im.models.commands :refer [parse-command-message-content
                                                parse-command-request]]
             [status-im.resources :as res]

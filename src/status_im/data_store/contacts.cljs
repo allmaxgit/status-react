@@ -1,13 +1,14 @@
 (ns status-im.data-store.contacts
-  (:require [status-im.data-store.realm.contacts :as data-store]))
+  (:require [status-im.data-store.realm.contacts :as data-store])
+  (:refer-clojure :exclude [exists?]))
 
 (defn get-all
   []
   (data-store/get-all-as-list))
 
 (defn get-by-id
-  [id]
-  (data-store/get-by-id id))
+  [whisper-identity]
+  (data-store/get-by-id whisper-identity))
 
 (defn save
   [{:keys [whisper-identity pending] :as contact}]
@@ -21,3 +22,7 @@
 (defn save-all
   [contacts]
   (mapv save contacts))
+
+(defn exists?
+  [whisper-identity]
+  (data-store/exists? whisper-identity))
