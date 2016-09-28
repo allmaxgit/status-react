@@ -8,10 +8,10 @@
 
 (defn get-all-as-list
   []
-  (-> (get-all)
-      realm/realm-collection->list
-      (map (fn [message]
-             (update message :topics read-string)))))
+  (->> (get-all)
+       realm/realm-collection->list
+       (map (fn [message]
+              (update message :topics read-string)))))
 
 (defn get-by-message-id
   [message-id]
