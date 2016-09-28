@@ -12,9 +12,10 @@
   (realm/get-one-by-field realm/base-realm :account :address address))
 
 (defn save [account update?]
-  (realm/create realm/base-realm :account account update?))
+  (realm/write realm/base-realm
+    #(realm/create realm/base-realm :account account update?)))
 
 (defn save-all [accounts update?]
   (realm/write realm/base-realm
                (fn []
-                 (mapv #(save % update?) accounts))))
+                 (mapv #(realm/create realm/base-realm :account % update?) accounts))))

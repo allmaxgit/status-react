@@ -141,13 +141,13 @@
       (.filtered filter)))
 
 (defn- get-schema-by-name [opts]
-  (->> (:schema opts)
+  (->> opts
        (mapv (fn [{:keys [name] :as schema}]
-               [name schema]))
+               [(keyword name) schema]))
        (into {})))
 
 (defn- field-type [realm schema-name field]
-  (let [schema-by-name (get-schema-by-name (clj->js (.-schema realm)))
+  (let [schema-by-name (get-schema-by-name (js->clj (.-schema realm) :keywordize-keys true))
         field-def (get-in schema-by-name [schema-name :properties field])]
     (if (map? field-def)
       (:type field-def)
