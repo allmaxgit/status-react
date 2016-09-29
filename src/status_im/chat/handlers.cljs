@@ -24,6 +24,7 @@
             [status-im.utils.types :refer [json->clj]]
             [status-im.chat.handlers.commands :refer [command-prefix]]
             [status-im.chat.utils :refer [console? not-console?]]
+            [status-im.constants :refer [console-chat-id]]
             status-im.chat.handlers.animation
             status-im.chat.handlers.requests
             status-im.chat.handlers.unviewed-messages
@@ -141,7 +142,7 @@
                       (str command-prefix text)
                       text)]
           (dispatch [::stage-command-with-content command text']))
-        (dispatch [::check-suggestions "console" text])))))
+        (dispatch [::check-suggestions console-chat-id text])))))
 
 (register-handler ::stage-command-with-content
   (u/side-effect!
@@ -171,9 +172,8 @@
 
 (defn init-console-chat
   [{:keys [chats] :as db} existing-account?]
-  (let [chat-id  "console"
-        new-chat sign-up-service/console-chat]
-    (if (chats chat-id)
+  (let [new-chat sign-up-service/console-chat]
+    (if (chats console-chat-id)
       db
       (do
         (chats/save new-chat)
@@ -182,9 +182,9 @@
           (sign-up-service/start-signup))
         (-> db
             (assoc :new-chat new-chat)
-            (update :chats assoc chat-id new-chat)
-            (update :chats-ids conj chat-id)
-            (assoc :current-chat-id "console"))))))
+            (update :chats assoc console-chat-id new-chat)
+            (update :chats-ids conj console-chat-id)
+            (assoc :current-chat-id console-chat-id))))))
 
 (register-handler :init-console-chat
   (fn [db _]
@@ -363,6 +363,9 @@
   (u/side-effect!
     (fn [{:keys [web3 current-chat-id chats current-public-key]} _]
       (let [{:keys [public-key private-key]} (chats current-chat-id)]
+        (protocol/stop-watching-group!
+          {:web3     web3
+           :group-id current-chat-id})
         (protocol/leave-group-chat!
           {:web3     web3
            :group-id current-chat-id

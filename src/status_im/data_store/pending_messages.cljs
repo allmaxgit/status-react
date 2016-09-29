@@ -1,12 +1,11 @@
 (ns status-im.data-store.pending-messages
   (:require [status-im.data-store.realm.pending-messages :as data-store]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [status-im.utils.hex :as i]))
 
 (defn- get-id
   [message-id to]
-  (let [to' (if (and to (str/starts-with? to "0x"))
-              (subs to 2)
-              to)
+  (let [to' (i/normalize-hex to)
         to'' (when to' (subs to' 0 7))
         id' (if to''
               (str message-id "-" (subs to'' 0 7))
