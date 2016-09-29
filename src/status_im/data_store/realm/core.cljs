@@ -169,6 +169,9 @@
     (.filtered (.objects realm (name schema-name)) q)))
 
 (defn get-one-by-field [realm schema-name field value]
+  (single (get-by-field realm schema-name field value)))
+
+(defn get-one-by-field-clj [realm schema-name field value]
   (single-cljs (get-by-field realm schema-name field value)))
 
 (defn get-by-fields [realm schema-name op fields]

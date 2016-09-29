@@ -36,7 +36,7 @@
 
 (defn get-by-id
   [chat-id]
-  (-> (realm/get-one-by-field @realm/account-realm :chat :chat-id chat-id)
+  (-> (realm/get-one-by-field-clj @realm/account-realm :chat :chat-id chat-id)
       (realm/list->array :contacts)))
 
 (defn save
@@ -103,17 +103,10 @@
   [chat-id property-name value]
   (realm/write @realm/account-realm
                (fn []
-                 (-> (get-by-id chat-id)
+                 (-> (realm/get-one-by-field @realm/account-realm :chat :chat-id chat-id)
                      (aset (name property-name) value)))))
 
 (defn get-property
   [chat-id property]
-  (when-let [chat (get-by-id chat-id)]
+  (when-let [chat (realm/get-one-by-field @realm/account-realm :chat :chat-id chat-id)]
     (aget chat (name property))))
-
-(defn set-active
-  [chat-id active?]
-  (realm/write @realm/account-realm
-               (fn []
-                 (-> (get-by-id chat-id)
-                     (aset "is-active" active?)))))

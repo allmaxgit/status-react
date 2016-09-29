@@ -56,10 +56,12 @@
   [chat-id property-name]
   (data-store/get-property chat-id property-name))
 
-(defn is-active? [chat-id]
+(defn is-active?
+  [chat-id]
   (get-property chat-id :is-active))
 
-(defn removed-at [chat-id]
+(defn removed-at
+  [chat-id]
   (get-property chat-id :removed-at))
 
 (defn get-active-group-chats
@@ -68,4 +70,4 @@
 
 (defn set-active
   [chat-id active?]
-  (data-store/set-active chat-id active?))
+  (save-property chat-id :is-active active?))

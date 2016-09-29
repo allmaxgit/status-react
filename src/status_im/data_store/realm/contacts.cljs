@@ -14,7 +14,7 @@
 
 (defn get-by-id
   [whisper-identity]
-  (realm/get-one-by-field @realm/account-realm :contact :whisper-identity whisper-identity))
+  (realm/get-one-by-field-clj @realm/account-realm :contact :whisper-identity whisper-identity))
 
 (defn save
   [contact update?]

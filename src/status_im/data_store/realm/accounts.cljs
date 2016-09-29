@@ -9,7 +9,7 @@
       realm/realm-collection->list))
 
 (defn get-by-address [address]
-  (realm/get-one-by-field realm/base-realm :account :address address))
+  (realm/get-one-by-field-clj realm/base-realm :account :address address))
 
 (defn save [account update?]
   (realm/write realm/base-realm

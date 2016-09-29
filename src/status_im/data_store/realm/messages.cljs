@@ -14,7 +14,7 @@
 
 (defn get-by-id
   [message-id]
-  (realm/get-one-by-field @realm/account-realm :message :message-id message-id))
+  (realm/get-one-by-field-clj @realm/account-realm :message :message-id message-id))
 
 (defn get-by-chat-id
   ([chat-id]

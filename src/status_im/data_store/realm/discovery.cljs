@@ -14,7 +14,7 @@
 
 (defn get-tag-by-name [tag]
   (log/debug "Getting tag: " tag)
-  (realm/get-one-by-field @realm/account-realm :tag :name tag))
+  (realm/get-one-by-field-clj @realm/account-realm :tag :name tag))
 
 (defn- update-tag-counter [func tag]
   (let [tag        (:name tag)
@@ -31,7 +31,7 @@
 
 (defn- get-tags
   [message-id]
-  (-> (realm/get-one-by-field @realm/account-realm :discovery :message-id message-id)
+  (-> (realm/get-one-by-field-clj @realm/account-realm :discovery :message-id message-id)
       (:tags)
       (vals)))
 
