@@ -12,5 +12,6 @@
     (doseq [i (range (.-length old-objects))]
       (aset (aget new-objects i)
             "content2"
-            (aget old-objects "content1")))
+            (-> (aget old-objects i)
+                (aget "content1"))))
     (log/debug new-objects)))
