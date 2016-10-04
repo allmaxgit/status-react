@@ -1,4 +1,4 @@
-(ns status-im.data-store.realm.schemas.account.v1.user-status
+(ns status-im.data-store.realm.schemas.account.user-status
   (:require [taoensso.timbre :as log]))
 
 (def schema {:name       :user-status

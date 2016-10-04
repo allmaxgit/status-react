@@ -1,4 +1,4 @@
-(ns status-im.data-store.realm.schemas.base.v1.account
+(ns status-im.data-store.realm.schemas.base.account
   (:require [taoensso.timbre :as log]))
 
 (def schema {:name       :account
@@ -17,6 +17,3 @@
                           :last-updated        {:type "int" :default 0}
                           :signed-up?          {:type    :bool
                                                 :default false}}})
-
-(defn migration [old-realm new-realm]
-  (log/debug "migrating account schema"))

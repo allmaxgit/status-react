@@ -1,4 +1,4 @@
-(ns status-im.data-store.realm.schemas.account.v1.contact
+(ns status-im.data-store.realm.schemas.account.contact
   (:require [taoensso.timbre :as log]))
 
 (def schema {:name       :contact
@@ -14,6 +14,3 @@
                                              :optional true}
                           :private-key      {:type     :string
                                              :optional true}}})
-
-(defn migration [old-realm new-realm]
-  (log/debug "migrating contact schema"))

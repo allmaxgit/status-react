@@ -1,4 +1,4 @@
-(ns status-im.data-store.realm.schemas.account.v1.pending-message
+(ns status-im.data-store.realm.schemas.account.pending-message
   (:require [taoensso.timbre :as log]))
 
 (def schema {:name       :pending-message

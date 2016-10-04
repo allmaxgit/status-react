@@ -1,4 +1,4 @@
-(ns status-im.data-store.realm.schemas.account.v1.message
+(ns status-im.data-store.realm.schemas.account.message
   (:require [taoensso.timbre :as log]))
 
 (def schema {:name       :message
@@ -10,6 +10,8 @@
                           :group-id       {:type     "string"
                                            :optional true}
                           :content        "string" ;; TODO make it ArrayBuffer
+                          ;:content2       {:type     "string"
+                          ;                 :optional true}
                           :content-type   "string"
                           :timestamp      "int"
                           :chat-id        {:type    "string"

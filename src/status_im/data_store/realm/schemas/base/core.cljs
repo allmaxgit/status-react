@@ -1,7 +1,9 @@
 (ns status-im.data-store.realm.schemas.base.core
-  (:require [status-im.data-store.realm.schemas.base.v1.core :as v1]))
+  (:require [status-im.data-store.realm.schemas.base.account :as account]
+            [status-im.data-store.realm.schemas.base.kv-store :as kv-store]
+            [status-im.data-store.realm.schemas.base.migrations.core :as migrations]))
 
-; put schemas ordered by version
-(def schemas [{:schema v1/schema
-               :schemaVersion 1
-               :migration v1/migration}])
+(def schema {:schema [account/schema
+                      kv-store/schema]
+             :schemaVersion 1
+             :migration migrations/migrate})

@@ -1,4 +1,4 @@
-(ns status-im.data-store.realm.schemas.account.v1.chat
+(ns status-im.data-store.realm.schemas.account.chat
   (:require [taoensso.timbre :as log]
             [status-im.components.styles :refer [default-chat-color]]))
 
@@ -25,6 +25,3 @@
                                             :optional true}
                           :private-key     {:type     :string
                                             :optional true}}})
-
-(defn migration [old-realm new-realm]
-  (log/debug "migrating chat schema"))

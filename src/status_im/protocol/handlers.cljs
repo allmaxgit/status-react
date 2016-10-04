@@ -246,7 +246,7 @@
       (when (#{:message :group-message} type)
         (messages/update {:message-id      id
                           :delivery-status :pending}))))
-  (fn [db [_ {:keys [type id to groupd-id]}]]
+  (fn [db [_ {:keys [type id to group-id]}]]
     (if (#{:message :group-message} type)
       (let [chat-id        (or group-id to)
             current-status (get-in db [:message-status chat-id id])]

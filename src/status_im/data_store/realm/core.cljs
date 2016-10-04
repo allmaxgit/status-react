@@ -23,24 +23,24 @@
 (defn close [realm]
   (.close realm))
 
-(defn migrate [file-name schemas]
+(defn migrate-realm [file-name schema]
   (let [current-version (realm-version file-name)]
-    (doseq [schema schemas
-            :when (> (:schemaVersion schema) current-version)
-            :let [migrated-realm (open-realm schema file-name)]]
-      (close migrated-realm))))
+    (log/debug "Current schema version: " current-version)
+    (when (> (:schemaVersion schema) current-version)
+      (let [migrated-realm (open-realm schema file-name)]
+        (close migrated-realm)))))
 
 (defn open-migrated-realm
-  [file-name schemas]
-  (migrate file-name schemas)
-  (open-realm (last schemas) file-name))
+  [file-name schema]
+  (migrate-realm file-name schema)
+  (open-realm schema file-name))
 
 (def new-account-filename "new-account")
 (def new-accout-realm-file (str new-account-filename ".realm"))
 
-(def base-realm (open-migrated-realm (.-defaultPath realm-class) base/schemas))
+(def base-realm (open-migrated-realm (.-defaultPath realm-class) base/schema))
 
-(def account-realm (atom (open-migrated-realm new-account-filename account/schemas)))
+(def account-realm (atom (open-migrated-realm new-account-filename account/schema)))
 
 (defn close-account-realm []
   (close @account-realm)
@@ -49,14 +49,14 @@
 (defn reset-account []
   (when @account-realm
     (close @account-realm))
-  (reset! account-realm (open-migrated-realm new-account-filename account/schemas))
+  (reset! account-realm (open-migrated-realm new-account-filename account/schema))
   (.write @account-realm #(.deleteAll @account-realm)))
 
 (defn move-file-handler [address err handler]
   (log/debug "Moved file with error: " err address)
   (if err
     (log/error "Error moving account realm: " (.-message err))
-    (reset! account-realm (open-migrated-realm address account/schemas)))
+    (reset! account-realm (open-migrated-realm address account/schema)))
   (handler err))
 
 (defn change-account [address new-account? handler]
@@ -69,7 +69,7 @@
         (log/debug "Moving file to " new-path)
         (fs/move-file path new-path #(move-file-handler address % handler)))
       (do
-        (reset! account-realm (open-migrated-realm address account/schemas))
+        (reset! account-realm (open-migrated-realm address account/schema))
         (handler nil)))))
 
 ; realm functions
