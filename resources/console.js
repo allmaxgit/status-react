@@ -1,3 +1,209 @@
+var WEB3_UNIT = [
+    'kwei/ada',
+    'mwei/babbage',
+    'gwei/shannon',
+    'szabo',
+    'finney',
+    'ether',
+    'kether/grand/einstein',
+    'mether',
+    'gether',
+    'tether',
+]
+
+// because web3 doesn't provide params or docs
+var WEB3_DOC_MAP = {
+    // setProvider     : ['provider'], // TODO
+    version: {
+        api : { desc: 'The ethereum js api version.' },
+        node : { desc: 'The client/node version.' },
+        network : { desc: 'The network protocol version.' },
+        ethereum : { desc: 'The ethereum protocol version.' },
+        whisper : { desc: 'The whisper protocol version.' },
+    },
+    isConnected : { desc: 'Check if a connection to a node exists.' },
+    net : {
+        listening : { desc: 'Is node actively listening for network connections?' },
+        peerCount : { desc: 'Returns the number of connected peers' }
+    },
+    sha3            : {
+        desc: 'Returns the Keccak-256 SHA3 of the given data.',
+        args: ['string', 'options']
+    },
+    toHex           : {
+        desc: 'Converts any value into HEX',
+        args: ['stringOrNumber']
+    },
+    toAscii         : {
+        desc: 'Converts a HEX string into a ASCII string.',
+        args: ['hexString']
+    },
+    fromAscii       : {
+        desc: 'Converts any ASCII string to a HEX string.',
+        args: ['textString', '[padding]']
+    },
+    toDecimal       : {
+        desc: 'Converts a HEX string to its number representation.',
+        args: ['hexString']
+    },
+    fromDecimal     : {
+        desc: 'Converts a number or number string to its HEX representation.',
+        args: ['number']
+    },
+    fromWei         : {
+        desc: 'Converts a number of wei into an ethereum unit',
+        args: ['numberStringOrBigNumber', 'unit']
+    },
+    toWei           : {
+        desc: 'Converts an ethereum unit into wei',
+        args: ['numberStringOrBigNumber', 'unit']
+    },
+    toBigNumber     : {
+        desc: 'Converts a given number into a BigNumber instance',
+        args: ['numberOrHexString']
+    },
+    isAddress       : ['hexString'], // TODO not in docs
+
+    eth : {
+        defaultBlock : { desc: 'This default block' },
+        syncing : { desc: 'Returns the either a sync object, when the node is syncing or false.' },
+        coinbase : { desc: 'Returns the coinbase address' },
+        gasPrice : { desc: 'Returns the current gas price. The gas price is determined by the x latest blocks median gas price' },
+        accounts : { desc: 'Returns a list of accounts the node controls' },
+        blockNumber : { desc: 'Returns the current block number' },
+
+        getBalance                      : {
+            desc: 'Get the balance of an address at a given block.',
+            args: ['address', '[defaultBlock]', '[callback]']
+        },
+        getStorageAt                    : {
+            desc: 'Get the storage at a specific position of an address.',
+            args: ['address', 'position', '[defaultBlock]', '[callback]']
+        },
+        getCode                         : {
+            desc: 'Get the code at a specific address.',
+            args: ['address', '[defaultBlock]', '[callback]']
+        },
+        getBlock                        : {
+            desc: 'Returns a block matching the block number or block hash.',
+            args: ['hashOrBlockNumber', '[returnTransactionObjects]', '[callback]']
+        },
+        getBlockTransactionCount        : {
+            desc: 'Returns the number of transaction in a given block.',
+            args: ['hashOrBlockNumber', '[callback]']
+        },
+        getUncle                        : {
+            desc: 'Returns a blocks uncle by a given uncle index position',
+            args:['hashOrBlockNumber', 'uncleNumber', '[returnTransactionObjects]']
+        },
+        getBlockUncleCount              : {
+            desc: '',
+            args: ['hashOrBlockNumber'], // TODO missing from docs
+        },
+        getTransaction                  : {
+            desc: 'Returns a transaction matching the given transaction hash.',
+            args: ['hash', '[callback]']
+        },
+        getTransactionFromBlock         : {
+            desc: 'Returns a transaction based on a block hash or number and the transactions index position.',
+            args: ['hashOrBlockNumber', 'indexNumber', '[callback]']
+        },
+        getTransactionReceipt           : {
+            desc: 'Returns the receipt of a transaction by transaction hash.',
+            args: ['hash', '[callback]']
+        },
+        getTransactionCount             : {
+            desc: 'Get the numbers of transactions sent from this address.',
+            args: ['address', '[defaultBlock]', '[callback]']
+        },
+        sendTransaction                 : {
+            desc: 'Sends a transaction to the network.',
+            args: [{
+                    from        : 'address',
+                    to          : '[address]',
+                    value       : '[numberStringOrBigNumber]',
+                    gas         : '[numberStringOrBigNumber]',
+                    gasPrice    : '[numberStringOrBigNumber]',
+                    data        : '[hexString]',
+                    nonce       : '[number]'
+                  }, '[callback]']
+        },
+        sendRawTransaction              : {
+            desc: 'Sends an already signed transaction.',
+            args: ['hexString', '[callback]']
+        },
+        sign                            : {
+            desc: 'Signs data from a specific account. This account needs to be unlocked.',
+            args: ['address', 'hexString', '[callback]']
+        },
+        call                            : {
+            desc: 'Executes a message call transaction, which is directly executed in the VM of the node, but never mined into the blockchain.',
+            args: ['object', '[numberStringOrBigNumber]', '[callback]']
+        },
+        estimateGas                     : {
+            desc: 'Executes a message call or transaction, which is directly executed in the VM of the node, but never mined into the blockchain and returns the amount of the gas used.',
+            args: ['object'] // TODO same as sendTransaction, everything optional
+        },
+
+        // TODO filters
+        // watch                           : ['callback'],
+        // stopWatching                    : ['callback'],
+        contract                        : {
+            desc: 'Creates a contract object for a solidity contract, which can be used to initiate contracts on an address.',
+            args: ['abiArray']
+        },
+        getCompilers                    : {
+            desc: 'Gets a list of available compilers.',
+            args: ['[callback]']
+        },
+
+        compile : { // TODO we should auto hide these depending on output from getCompilers
+            lll                         : {
+                desc: 'Compiles LLL source code.',
+                args: ['string']
+            },
+            solidity                    : {
+                desc: 'Compiles solidity source code',
+                args: ['string'],
+            },
+            serpent                     : {
+                desc: 'Compiles serpent source code',
+                args: ['string']
+            }
+        }
+    },
+
+    db: {
+        putString     : {
+            desc: 'Store a string in the local leveldb database. (db, key, value)',
+            args: ['string', 'string', 'string']
+        },
+        getString     : {
+            desc: 'Retrieve a string from the local leveldb database. (db, key)',
+            args: ['string', 'string']
+        },
+        putHex        : {
+            desc: 'Store binary data in the local leveldb database. (db, key, value)',
+            args: ['string', 'string', 'hexString']
+        },
+        getHex        : {
+            desc: 'Retrieve binary data from the local leveldb database. (db, key)',
+            args: ['string', 'string']
+        }
+    }
+};
+
+status.command({
+    name: "web3",
+    description: "Access the web3 object",
+    color: "#7099e6",
+    params: [{
+        name: "query",
+        type: status.types.TEXT
+    }]
+});
+
+
 var phones = [
     {
         number: "89171111111",
