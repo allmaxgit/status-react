@@ -227,7 +227,32 @@ function find_docs (needle, haystack) {
 
 var needle = 'getTransactionFromBlock',
     haystack = iterate(web3, 'web3', []);
+
+window.console = (function(old){
+    return {
+        log: function(text){
+            old.log(text);
+            status.message(text);
+        },
+        info: function (text) {
+            old.info(text);
+            status.message('i: ' + text);
+        },
+        warn: function (text) {
+            old.warn(text);
+            status.message('w ' + text);
+        },
+        error: function (text) {
+            old.error(text);
+            status.message('e: ' + text);
+        }
+    };
+}(window.console));
+
+
 console.log(find_docs(needle, haystack));
+
+
 
 status.command({
     name: "js",
