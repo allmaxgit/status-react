@@ -194,11 +194,46 @@ var DOC_MAP = {
     }
 };
 
+function suggestionsContainerStyle(suggestionsCount) {
+    return {
+        marginVertical: 1,
+        marginHorizontal: 0,
+        height: Math.min(150, (56 * suggestionsCount)),
+        backgroundColor: "white",
+        borderRadius: 5
+    };
+}
+
+var suggestionContainerStyle = {
+    paddingLeft: 16,
+    backgroundColor: "white"
+};
+
+var suggestionSubContainerStyle = {
+    height: 56,
+    borderBottomWidth: 1,
+    borderBottomColor: "#0000001f"
+};
+
+var valueStyle = {
+    marginTop: 9,
+    fontSize: 14,
+    fontFamily: "font",
+    color: "#000000de"
+};
+
+var descriptionStyle = {
+    marginTop: 1.5,
+    fontSize: 14,
+    fontFamily: "font",
+    color: "#838c93de"
+};
+
 function iterate(obj, stack, output) {
     for (var k in obj) {
         if (k.startsWith('_'))
             continue;
-        if (obj.hasOwnProperty(k)) {
+        // if (obj.hasOwnProperty(k)) {
             var stack_prop = stack + '.' + k,
             v = obj[k];
             if (typeof v == 'object') {
@@ -206,7 +241,7 @@ function iterate(obj, stack, output) {
             } else {
                 output.push(stack_prop);
             }
-        }
+        // }
     }
     return output;
 }
@@ -248,9 +283,43 @@ window.console = (function(old){
 }(window.console));
 
 
-console.log(find_docs('getTransactionFromBlock', haystack));
+function jsSuggestions(params) {
+    var suggestions, query, search_result;
+    if (!params.code || params.code == "")
+        return;
 
+    query = params.code.match(/[\w\d\.]+$/im);
 
+    if (query) {
+        searchResults = find_docs(query[0], haystack);
+        newCode = params.code.slice(0, -query[0].length);
+        suggestions = searchResults.map(function (result) {
+            return status.components.touchable(
+                {onPress: [status.events.SET_VALUE, newCode + result[0]]}, 
+                status.components.view(suggestionContainerStyle,
+                    [status.components.view(suggestionSubContainerStyle,
+                        [
+                            status.components.text(
+                                {style: valueStyle},
+                                result[0]
+                            ),
+                            status.components.text(
+                                {style: descriptionStyle},
+                                result[1].desc || '' // TODO args
+                            )
+                        ])])
+                );
+        });
+
+        var view = status.components.scrollView(
+            suggestionsContainerStyle(searchResults.length),
+            suggestions
+        );
+
+        return {markup: view};
+    }
+
+}
 
 status.command({
     name: "js",
@@ -258,9 +327,12 @@ status.command({
     description: "Evaluate Javascript",
     color: "#7099e6",
     params: [{
-        name: "query",
+        name: "code",
         type: status.types.TEXT
+        suggestions: jsSuggestions,
+        placeholder: "Code"
     }]
+    // 
 });
 
 
@@ -282,41 +354,6 @@ var phones = [
         description: "Number format 3"
     }
 ];
-
-function suggestionsContainerStyle(suggestionsCount) {
-    return {
-        marginVertical: 1,
-        marginHorizontal: 0,
-        height: Math.min(150, (56 * suggestionsCount)),
-        backgroundColor: "white",
-        borderRadius: 5
-    };
-}
-
-var suggestionContainerStyle = {
-    paddingLeft: 16,
-    backgroundColor: "white"
-};
-
-var suggestionSubContainerStyle = {
-    height: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: "#0000001f"
-};
-
-var valueStyle = {
-    marginTop: 9,
-    fontSize: 14,
-    fontFamily: "font",
-    color: "#000000de"
-};
-
-var descriptionStyle = {
-    marginTop: 1.5,
-    fontSize: 14,
-    fontFamily: "font",
-    color: "#838c93de"
-};
 
 function startsWith(str1, str2) {
     // String.startsWith(...) doesn't work in otto
