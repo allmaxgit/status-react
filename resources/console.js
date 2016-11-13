@@ -265,19 +265,19 @@ window.console = (function(old){
     return {
         log: function(text){
             old.log(text);
-            status.message(text);
+            // status.message(text); // TODO
         },
         info: function (text) {
             old.info(text);
-            status.message('i: ' + text);
+            // status.message('i: ' + text); // TODO
         },
         warn: function (text) {
             old.warn(text);
-            status.message('w ' + text);
+            // status.message('w ' + text); // TODO
         },
         error: function (text) {
             old.error(text);
-            status.message('e: ' + text);
+            // status.message('e: ' + text); // TODO
         }
     };
 }(window.console));
@@ -331,8 +331,22 @@ status.command({
         type: status.types.TEXT
         suggestions: jsSuggestions,
         placeholder: "Code"
-    }]
-    // 
+    }],
+    preview: function (params) {
+        return status.components.text(
+            {},
+            params.code
+        );
+    },
+    handler: function (params) {
+        var result = '';
+        try {
+            result = eval(params.code);
+        } catch(e) {
+            result = e;
+        }
+        // status.message(result) // TODO ???
+    }
 });
 
 
