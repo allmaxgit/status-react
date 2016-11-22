@@ -17,7 +17,8 @@
     [status-im.discovery.views.popular-list :refer [discovery-popular-list]]
     [status-im.discovery.views.discovery-list-item :refer [discovery-list-item]]
     [status-im.contacts.styles :as contacts-styles]
-    [status-im.utils.platform :refer [platform-specific]]))
+    [status-im.utils.platform :refer [platform-specific]]
+    [reagent.core :as r]))
 
 (defn get-hashtags [status]
   (let [hashtags (map #(str/lower-case (str/replace % #"#" "")) (re-seq #"[^ !?,;:.]+" status))]
@@ -26,14 +27,16 @@
 (defn title-content [show-search?]
   [view st/discovery-toolbar-content
    (if show-search?
-     [text-input {:style           st/discovery-search-input
-                  :autoFocus       true
-                  :placeholder     (label :t/search-tags)
-                  :onSubmitEditing (fn [e]
-                                     (let [search   (aget e "nativeEvent" "text")
-                                           hashtags (get-hashtags search)]
-                                       (dispatch [:set :discovery-search-tags hashtags])
-                                       (dispatch [:navigate-to :discovery-search-results])))}]
+     [text-input {:style             st/discovery-search-input
+                  :auto-focus        true
+                  :placeholder       (label :t/search-tags)
+                  :on-blur           (fn [e]
+                                       (dispatch [:set ::show-search? false]))
+                  :on-submit-editing (fn [e]
+                                       (let [search (aget e "nativeEvent" "text")
+                                             hashtags (get-hashtags search)]
+                                         (dispatch [:set :discovery-search-tags hashtags])
+                                         (dispatch [:navigate-to :discovery-search-results])))}]
      [view
       [text {:style st/discovery-title
              :font  :toolbar-title}
@@ -88,21 +91,24 @@
                                 :show-separator? (not= (inc i) (count discoveries))
                                 :current-account current-account}]))]]))
 
-(defview discovery []
-  [show-search? [:get ::show-search?]
-   contacts [:get :contacts]
-   current-account [:get-current-account]
-   discoveries [:get-recent-discoveries]]
-  [view st/discovery-container
-   [discovery-toolbar show-search?]
-   (if discoveries
-     [scroll-view st/scroll-view-container
-      [discovery-popular {:contacts        contacts
-                          :current-account current-account}]
-      [discovery-recent {:current-account current-account}]]
-     [view contacts-styles/empty-contact-groups
-      ;; todo change icon
-      [icon :group_big contacts-styles/empty-contacts-icon]
-      [text {:style contacts-styles/empty-contacts-text}
-       (label :t/no-statuses-discovered)]])
-   [bottom-gradient]])
+(defn discovery [_]
+  (let [show-search? (subscribe [:get ::show-search?])
+        contacts (subscribe [:get :contacts])
+        current-account (subscribe [:get-current-account])
+        discoveries (subscribe [:get-recent-discoveries])]
+    (r/create-class
+      {:reagent-render
+       (fn [current-view?]
+         [view st/discovery-container
+          [discovery-toolbar (and current-view? @show-search?)]
+          (if @discoveries
+            [scroll-view st/scroll-view-container
+             [discovery-popular {:contacts        @contacts
+                                 :current-account @current-account}]
+             [discovery-recent {:current-account @current-account}]]
+            [view contacts-styles/empty-contact-groups
+             ;; todo change icon
+             [icon :group_big contacts-styles/empty-contacts-icon]
+             [text {:style contacts-styles/empty-contacts-text}
+              (label :t/no-statuses-discovered)]])
+          [bottom-gradient]])})))
