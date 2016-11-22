@@ -1,3 +1,5 @@
+
+
 var WEB3_UNIT = [
     'kwei/ada',
     'mwei/babbage',
@@ -228,7 +230,7 @@ var descriptionStyle = {
     fontFamily: "font",
     color: "#838c93de"
 };
-
+/*
 function iterate(obj, stack, output) {
     for (var k in obj) {
         if (k.startsWith('_'))
@@ -246,6 +248,8 @@ function iterate(obj, stack, output) {
     return output;
 }
 
+var haystack = iterate(DOC_MAP.web3, 'web3', []);
+
 function find_docs (needle, haystack) {
     return haystack.filter(function(k) {
         return k.indexOf(needle) != -1;
@@ -258,8 +262,6 @@ function find_docs (needle, haystack) {
     });
     
 }
-
-var haystack = iterate(web3, 'web3', []);
 
 window.console = (function(old){
     return {
@@ -321,6 +323,8 @@ function jsSuggestions(params) {
 
 }
 
+console.log(jsSuggestions({code: "web3.isConnected()"}));
+*/
 status.command({
     name: "js",
     title: "Javascript",
@@ -329,7 +333,7 @@ status.command({
     params: [{
         name: "code",
         type: status.types.TEXT,
-        suggestions: jsSuggestions,
+        //suggestions: jsSuggestions,
         placeholder: "Code"
     }],
     preview: function (params) {
@@ -337,6 +341,22 @@ status.command({
             {},
             params.code
         );
+    },
+    validator: function (params) {
+        var error = null;
+        try {
+            eval(params.code);
+        } catch(e) {
+            error = e;
+        }
+        if (error) {
+            var error = status.components.validationMessage(
+                "Invalid js",
+                error
+            );
+
+            return {errors: [error]};
+        }
     },
     handler: function (params) {
         var result = {
@@ -346,7 +366,7 @@ status.command({
         try {
             result.data = eval(params.code);
         } catch(e) {
-            result.error = e;
+            result.err = e;
         }
         return result;
         // status.message(result) // TODO ???
@@ -530,3 +550,4 @@ status.response({
         return status.components.text({style: style}, "●●●●●●●●●●");
     }
 });
+
