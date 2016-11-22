@@ -99,7 +99,7 @@
    :new-group-chat                        "Новий груповий чат"
 
    ;discover
-   :discovery                             "Відкриття"
+   :discover                             "Відкриття"
    :none                                  "Жоден"
    :search-tags                           "Введіть теги для пошуку тут"
    :popular-tags                          "Популярні теги"

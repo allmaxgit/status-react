@@ -1,9 +1,9 @@
-(ns status-im.discovery.views.discovery-list-item
+(ns status-im.discover.views.discover-list-item
   (:require-macros [status-im.utils.views :refer [defview]])
   (:require [re-frame.core :refer [subscribe dispatch]]
             [clojure.string :as str]
             [status-im.components.react :refer [view text image touchable-highlight]]
-            [status-im.discovery.styles :as st]
+            [status-im.discover.styles :as st]
             [status-im.utils.gfycat.core :refer [generate-gfy]]
             [status-im.utils.identicon :refer [identicon]]
             [status-im.i18n :refer [label]]
@@ -26,7 +26,7 @@
        ^{:key (str "item-" message-id "-" i)}
        (str status " ")))])
 
-(defview discovery-list-item [{{:keys [name
+(defview discover-list-item [{{:keys [name
                                        photo-path
                                        whisper-id]
                                 :as   message}                   :message
@@ -37,7 +37,7 @@
                                 :as                current-account} :current-account}]
   [{contact-name       :name
     contact-photo-path :photo-path} [:get-in [:contacts whisper-id]]]
-  (let [item-style (get-in platform-specific [:component-styles :discovery :item])]
+  (let [item-style (get-in platform-specific [:component-styles :discover :item])]
     [view
      [view st/popular-list-item
       [view st/popular-list-item-name-container
