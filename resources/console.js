@@ -8,8 +8,8 @@ var WEB3_UNIT = [
     'kether/grand/einstein',
     'mether',
     'gether',
-    'tether',
-]
+    'tether'
+];
 
 var DOC_MAP = {
     web3: {
@@ -323,12 +323,12 @@ function jsSuggestions(params) {
 
 status.command({
     name: "js",
-    title: "Javascript"
+    title: "Javascript",
     description: "Evaluate Javascript",
     color: "#7099e6",
     params: [{
         name: "code",
-        type: status.types.TEXT
+        type: status.types.TEXT,
         suggestions: jsSuggestions,
         placeholder: "Code"
     }],
@@ -339,12 +339,16 @@ status.command({
         );
     },
     handler: function (params) {
-        var result = '';
+        var result = {
+            err: null,
+            data: null
+        };
         try {
-            result = eval(params.code);
+            result.data = eval(params.code);
         } catch(e) {
-            result = e;
+            result.error = e;
         }
+        return result;
         // status.message(result) // TODO ???
     }
 });
